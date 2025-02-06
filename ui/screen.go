@@ -6,13 +6,9 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
-type Screen struct {
-	screen *tcell.Screen
-}
+var screen tcell.Screen
 
-var screen *Screen
-
-func NewScreen() *Screen {
+func NewScreen() tcell.Screen {
 	logger.Info("Creating screen")
 	if screen != nil {
 		logger.Info("Screen already created")
@@ -25,5 +21,5 @@ func NewScreen() *Screen {
 		panic(err)
 	}
 
-	return &Screen{screen: &screen}
+	return screen
 }
