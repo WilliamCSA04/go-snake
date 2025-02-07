@@ -23,3 +23,7 @@ func NewScreen() tcell.Screen {
 
 	return screen
 }
+
+func ScreenStyle() tcell.Style {
+	return tcell.StyleDefault.Background(tcell.ColorReset).Foreground(tcell.ColorReset)
+}

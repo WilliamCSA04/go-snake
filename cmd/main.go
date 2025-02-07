@@ -9,29 +9,28 @@ import (
 )
 
 func main() {
-	logger.Info("Starting Snake")
-	screen := ui.NewScreen()
+	// Initialize the tcell s
+	s := ui.NewScreen()
 
-	logger.Info("Setting styles")
-	style := tcell.StyleDefault.Background(tcell.ColorBlack).Foreground(tcell.ColorWhite)
-	screenStyle := tcell.StyleDefault.Background(tcell.ColorReset).Foreground(tcell.ColorReset)
-
-	logger.Info("Defining styles")
-	screen.SetStyle(screenStyle)
-
-	logger.Info("Drawing")
-	ui.Draw(screen, 1, 1, 42, 7, style)
-
-	logger.Info("Declaring quit function")
-	quit := func() {
-		logger.Error("Quitting")
-		maybePanic := recover()
-		screen.Fini()
-		if maybePanic != nil {
-			panic(maybePanic)
-		}
+	if err := s.Init(); err != nil {
+		logger.Error("Failed to initialize screen")
 	}
-	defer quit()
 
-	engine.GameLoop(screen)
+	defer s.Fini()
+
+	// Define square parameters
+	startX, startY := 5, 5 // Top-left corner of the square
+	width, height := 10, 5 // Dimensions of the square
+
+	// Style for the square
+	style := tcell.StyleDefault.Background(tcell.ColorBlue).Foreground(tcell.ColorWhite)
+
+	// Draw the square
+	ui.Draw(s, startX, startY, width, height, style)
+
+	// Show the square
+	engine.GameLoop(s)
+
+	// Wait for user input before exiting
+
 }

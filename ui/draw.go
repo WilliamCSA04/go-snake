@@ -2,8 +2,10 @@ package ui
 
 import "github.com/gdamore/tcell/v2"
 
-func Draw(s tcell.Screen, x1, y1, x2, y2 int, style tcell.Style) {
-	row := y1
-	col := x1
-	s.SetContent(row, col, 0, nil, style)
+func Draw(s tcell.Screen, startX int, startY int, width int, height int, style tcell.Style) {
+	for y := startY; y < startY+height; y++ {
+		for x := startX; x < startX+width; x++ {
+			s.SetContent(x, y, ' ', nil, style)
+		}
+	}
 }
