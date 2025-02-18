@@ -20,7 +20,7 @@ type Coords struct {
 
 func NewGame() *Game {
 	s := ui.NewScreen()
-	snake := SpawnSnake(5, 5, 2, 1)
+	snake := SpawnSnake(6, 6, 2, 1)
 	f := SpawnFood(0, 0, 2, 1)
 	return &Game{
 		screen: s,
@@ -40,9 +40,9 @@ func (g *Game) Controller(ev tcell.Event) bool {
 		case tcell.KeyEscape, tcell.KeyCtrlC:
 			return false
 		case tcell.KeyLeft:
-			g.Update(g.snake.Coords.x-1, g.snake.Coords.y)
+			g.Update(g.snake.Coords.x-2, g.snake.Coords.y)
 		case tcell.KeyRight:
-			g.Update(g.snake.Coords.x+1, g.snake.Coords.y)
+			g.Update(g.snake.Coords.x+2, g.snake.Coords.y)
 		case tcell.KeyUp:
 			g.Update(g.snake.Coords.x, g.snake.Coords.y-1)
 		case tcell.KeyDown:
@@ -65,6 +65,9 @@ func (g *Game) Update(x, y int) {
 	if g.food.Coords.x == x && g.food.Coords.y == y {
 		sw, sh := g.screen.Size()
 		newPositionX := rand.Intn(sw)
+		if newPositionX%2 != 0 {
+			newPositionX++
+		}
 		newPositionY := rand.Intn(sh)
 		ui.Draw(g.screen, newPositionX, newPositionY, width, height, foodStyle)
 		g.food.Move(newPositionX, newPositionY)
