@@ -24,7 +24,7 @@ func (g *Game) Screen() tcell.Screen {
 	return g.screen
 }
 
-func Controller(ev tcell.Event) {
+func (g *Game) Controller(ev tcell.Event) {
 	switch event := ev.(type) {
 	case *tcell.EventKey:
 		switch event.Key() {
@@ -47,7 +47,7 @@ func (g *Game) GameLoop() {
 	for {
 		switch ev := g.screen.PollEvent().(type) {
 		case *tcell.EventKey:
-			Controller(ev)
+			g.Controller(ev)
 			return
 		case *tcell.EventResize:
 			g.screen.Sync() // Handle terminal resize
