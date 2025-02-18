@@ -6,11 +6,6 @@ type Snake struct {
 	height int
 }
 
-type Coords struct {
-	x int
-	y int
-}
-
 func SpawnSnake(x int, y int, width int, height int) *Snake {
 	return &Snake{
 		Coords{
@@ -21,7 +16,7 @@ func SpawnSnake(x int, y int, width int, height int) *Snake {
 	}
 }
 
-func (s *Snake) Move(x int, y int) {
+func (s *Food) Move(x int, y int) {
 	s.x = x
 	s.y = y
 }

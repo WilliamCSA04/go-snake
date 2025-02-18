@@ -2,6 +2,7 @@ package engine
 
 import (
 	"Snake/ui"
+	"math/rand"
 
 	"github.com/gdamore/tcell/v2"
 )
@@ -9,14 +10,22 @@ import (
 type Game struct {
 	screen tcell.Screen
 	snake  *Snake
+	food   *Food
+}
+
+type Coords struct {
+	x int
+	y int
 }
 
 func NewGame() *Game {
 	s := ui.NewScreen()
-	snake := SpawnSnake(5, 5, 10, 5)
+	snake := SpawnSnake(5, 5, 2, 1)
+	f := SpawnFood(rand.Intn(50), rand.Intn(10), 2, 1)
 	return &Game{
 		screen: s,
 		snake:  snake,
+		food:   f,
 	}
 }
 
@@ -44,11 +53,17 @@ func (g *Game) Controller(ev tcell.Event) bool {
 }
 
 func (g *Game) Update(x, y int) {
-	// Style for the square
-	style := tcell.StyleDefault.Background(tcell.ColorBlue).Foreground(tcell.ColorWhite)
+	g.screen.Clear()
 	width, height := 2, 1
-	// Draw the square
+
+	// Style for the snake
+	style := tcell.StyleDefault.Background(tcell.ColorBlue).Foreground(tcell.ColorWhite)
 	ui.Draw(g.screen, x, y, width, height, style)
+
+	// Style for the food
+	foodStyle := tcell.StyleDefault.Background(tcell.ColorYellow).Foreground(tcell.ColorWhite)
+	ui.Draw(g.screen, g.food.Coords.x, g.food.Coords.y, width, height, foodStyle)
+
 	g.snake.Move(x, y)
 }
 
