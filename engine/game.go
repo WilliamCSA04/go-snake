@@ -13,7 +13,7 @@ type Game struct {
 
 func NewGame() *Game {
 	s := ui.NewScreen()
-	snake := Spawn(5, 5, 10, 5)
+	snake := SpawnSnake(5, 5, 10, 5)
 	return &Game{
 		screen: s,
 		snake:  snake,

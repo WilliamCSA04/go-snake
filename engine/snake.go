@@ -11,7 +11,7 @@ type Coords struct {
 	y int
 }
 
-func Spawn(x int, y int, width int, height int) *Snake {
+func SpawnSnake(x int, y int, width int, height int) *Snake {
 	return &Snake{
 		Coords{
 			x, y,
