@@ -20,3 +20,8 @@ func SpawnSnake(x int, y int, width int, height int) *Snake {
 		height,
 	}
 }
+
+func (s *Snake) Move(x int, y int) {
+	s.x = x
+	s.y = y
+}
