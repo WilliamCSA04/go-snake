@@ -18,7 +18,12 @@ type Coords struct {
 	y int
 }
 
+var (
+	width, height int
+)
+
 func NewGame() *Game {
+	width, height = 2, 1
 	s := ui.NewScreen()
 	snake := SpawnSnake(6, 6, 2, 1)
 	f := SpawnFood(0, 0, 2, 1)
@@ -54,7 +59,6 @@ func (g *Game) Controller(ev tcell.Event) bool {
 
 func (g *Game) Update(x, y int) {
 	g.screen.Clear()
-	width, height := 2, 1
 
 	// Style for the snake
 	style := tcell.StyleDefault.Background(tcell.ColorBlue).Foreground(tcell.ColorWhite)
