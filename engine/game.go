@@ -21,7 +21,7 @@ type Coords struct {
 func NewGame() *Game {
 	s := ui.NewScreen()
 	snake := SpawnSnake(5, 5, 2, 1)
-	f := SpawnFood(rand.Intn(50), rand.Intn(10), 2, 1)
+	f := SpawnFood(0, 0, 2, 1)
 	return &Game{
 		screen: s,
 		snake:  snake,
@@ -62,13 +62,20 @@ func (g *Game) Update(x, y int) {
 
 	// Style for the food
 	foodStyle := tcell.StyleDefault.Background(tcell.ColorYellow).Foreground(tcell.ColorWhite)
-	ui.Draw(g.screen, g.food.Coords.x, g.food.Coords.y, width, height, foodStyle)
+	if g.food.Coords.x == x && g.food.Coords.y == y {
+		sw, sh := g.screen.Size()
+		newPositionX := rand.Intn(sw)
+		newPositionY := rand.Intn(sh)
+		ui.Draw(g.screen, newPositionX, newPositionY, width, height, foodStyle)
+		g.food.Move(newPositionX, newPositionY)
+	} else {
+		ui.Draw(g.screen, g.food.Coords.x, g.food.Coords.y, width, height, foodStyle)
+	}
 
 	g.snake.Move(x, y)
 }
 
 func (g *Game) GameLoop() {
-
 	g.Update(g.snake.Coords.x, g.snake.Coords.y)
 
 	for {
