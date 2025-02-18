@@ -46,7 +46,7 @@ func (g *Game) Controller(ev tcell.Event) bool {
 func (g *Game) Update(x, y int) {
 	// Style for the square
 	style := tcell.StyleDefault.Background(tcell.ColorBlue).Foreground(tcell.ColorWhite)
-	width, height := 10, 5
+	width, height := 2, 1
 	// Draw the square
 	ui.Draw(g.screen, x, y, width, height, style)
 	g.snake.Move(x, y)
