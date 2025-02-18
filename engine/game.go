@@ -13,11 +13,6 @@ type Game struct {
 	food   *Food
 }
 
-type Coords struct {
-	x int
-	y int
-}
-
 var (
 	width, height int
 )
@@ -45,13 +40,13 @@ func (g *Game) Controller(ev tcell.Event) bool {
 		case tcell.KeyEscape, tcell.KeyCtrlC:
 			return false
 		case tcell.KeyLeft:
-			g.Update(g.snake.Coords.x-2, g.snake.Coords.y)
+			g.Update(g.snake.x-2, g.snake.y)
 		case tcell.KeyRight:
-			g.Update(g.snake.Coords.x+2, g.snake.Coords.y)
+			g.Update(g.snake.x+2, g.snake.y)
 		case tcell.KeyUp:
-			g.Update(g.snake.Coords.x, g.snake.Coords.y-1)
+			g.Update(g.snake.x, g.snake.y-1)
 		case tcell.KeyDown:
-			g.Update(g.snake.Coords.x, g.snake.Coords.y+1)
+			g.Update(g.snake.x, g.snake.y+1)
 		}
 	}
 	return true
@@ -66,7 +61,7 @@ func (g *Game) Update(x, y int) {
 
 	// Style for the food
 	foodStyle := tcell.StyleDefault.Background(tcell.ColorYellow).Foreground(tcell.ColorWhite)
-	if g.food.Coords.x == x && g.food.Coords.y == y {
+	if g.food.x == x && g.food.y == y {
 		sw, sh := g.screen.Size()
 		newPositionX := rand.Intn(sw)
 		if newPositionX%2 != 0 {
@@ -76,14 +71,14 @@ func (g *Game) Update(x, y int) {
 		ui.Draw(g.screen, newPositionX, newPositionY, width, height, foodStyle)
 		g.food.Move(newPositionX, newPositionY)
 	} else {
-		ui.Draw(g.screen, g.food.Coords.x, g.food.Coords.y, width, height, foodStyle)
+		ui.Draw(g.screen, g.food.x, g.food.y, width, height, foodStyle)
 	}
 
 	g.snake.Move(x, y)
 }
 
 func (g *Game) GameLoop() {
-	g.Update(g.snake.Coords.x, g.snake.Coords.y)
+	g.Update(g.snake.x, g.snake.y)
 
 	for {
 		switch ev := g.screen.PollEvent().(type) {

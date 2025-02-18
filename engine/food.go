@@ -1,16 +1,16 @@
 package engine
 
 type Food struct {
-	Coords
+	x      int
+	y      int
 	width  int
 	height int
 }
 
 func SpawnFood(x int, y int, width int, height int) *Food {
 	return &Food{
-		Coords{
-			x, y,
-		},
+		x,
+		y,
 		width,
 		height,
 	}

@@ -1,17 +1,17 @@
 package engine
 
 type Snake struct {
-	Coords
-	width  int
+	x,
+	y,
+	width int
 	height int
 	size   int
 }
 
 func SpawnSnake(x int, y int, width int, height int) *Snake {
 	return &Snake{
-		Coords{
-			x, y,
-		},
+		x,
+		y,
 		width,
 		height,
 		1,
