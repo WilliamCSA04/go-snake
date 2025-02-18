@@ -10,7 +10,9 @@ import (
 
 func main() {
 	// Initialize the tcell s
-	s := ui.NewScreen()
+	g := engine.NewGame()
+
+	s := g.Screen()
 
 	if err := s.Init(); err != nil {
 		logger.Error("Failed to initialize screen")
@@ -29,7 +31,7 @@ func main() {
 	ui.Draw(s, startX, startY, width, height, style)
 
 	// Show the square
-	engine.GameLoop(s)
+	g.GameLoop()
 
 	// Wait for user input before exiting
 
