@@ -40,13 +40,13 @@ func (g *Game) Controller(ev tcell.Event) bool {
 		case tcell.KeyEscape, tcell.KeyCtrlC:
 			return false
 		case tcell.KeyLeft:
-			g.Update(g.snake.x-2, g.snake.y)
+			g.Update(g.snake.x[0]-2, g.snake.y[0])
 		case tcell.KeyRight:
-			g.Update(g.snake.x+2, g.snake.y)
+			g.Update(g.snake.x[0]+2, g.snake.y[0])
 		case tcell.KeyUp:
-			g.Update(g.snake.x, g.snake.y-1)
+			g.Update(g.snake.x[0], g.snake.y[0]-1)
 		case tcell.KeyDown:
-			g.Update(g.snake.x, g.snake.y+1)
+			g.Update(g.snake.x[0], g.snake.y[0]+1)
 		}
 	}
 	return true
@@ -78,7 +78,7 @@ func (g *Game) Update(x, y int) {
 }
 
 func (g *Game) GameLoop() {
-	g.Update(g.snake.x, g.snake.y)
+	g.Update(g.snake.x[0], g.snake.y[0])
 
 	for {
 		switch ev := g.screen.PollEvent().(type) {

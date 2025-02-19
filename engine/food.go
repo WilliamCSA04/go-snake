@@ -16,7 +16,7 @@ func SpawnFood(x int, y int, width int, height int) *Food {
 	}
 }
 
-func (s *Snake) Move(x int, y int) {
+func (s *Food) Move(x int, y int) {
 	s.x = x
 	s.y = y
 }
