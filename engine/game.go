@@ -3,6 +3,7 @@ package engine
 import (
 	"Snake/ui"
 	"math/rand"
+	"time"
 
 	"github.com/gdamore/tcell/v2"
 )
@@ -13,12 +14,22 @@ const (
 	GAME_OVER = iota
 )
 
+type Direction int
+
 type Game struct {
-	screen tcell.Screen
-	snake  *Snake
-	food   *Food
-	state  int
+	screen    tcell.Screen
+	snake     *Snake
+	food      *Food
+	state     int
+	direction Direction
 }
+
+const (
+	UP    Direction = iota
+	DOWN  Direction = iota
+	LEFT  Direction = iota
+	RIGHT Direction = iota
+)
 
 var (
 	width, height int
@@ -30,10 +41,11 @@ func NewGame() *Game {
 	snake := SpawnSnake(6, 6, 2, 1)
 	f := SpawnFood(0, 0, 2, 1)
 	return &Game{
-		screen: s,
-		snake:  snake,
-		food:   f,
-		state:  START,
+		screen:    s,
+		snake:     snake,
+		food:      f,
+		state:     START,
+		direction: RIGHT,
 	}
 }
 
@@ -48,13 +60,13 @@ func (g *Game) Controller(ev tcell.Event) bool {
 		case tcell.KeyEscape, tcell.KeyCtrlC:
 			return false
 		case tcell.KeyLeft:
-			g.Update(g.snake.x[0]-2, g.snake.y[0])
+			g.direction = LEFT
 		case tcell.KeyRight:
-			g.Update(g.snake.x[0]+2, g.snake.y[0])
+			g.direction = RIGHT
 		case tcell.KeyUp:
-			g.Update(g.snake.x[0], g.snake.y[0]-1)
+			g.direction = UP
 		case tcell.KeyDown:
-			g.Update(g.snake.x[0], g.snake.y[0]+1)
+			g.direction = DOWN
 		}
 	}
 	return true
@@ -112,18 +124,46 @@ func (g *Game) GameLoop() {
 	foodStyle := tcell.StyleDefault.Background(tcell.ColorYellow).Foreground(tcell.ColorWhite)
 	ui.Draw(g.screen, g.food.x, g.food.y, width, height, foodStyle)
 	g.state = ON_GOING
+
+	evCh := make(chan tcell.Event)
+
+	// Start a goroutine to poll events
+	go func() {
+		for {
+			evCh <- g.screen.PollEvent()
+		}
+	}()
+
 	for {
-		switch ev := g.screen.PollEvent().(type) {
-		case *tcell.EventKey:
-			if !g.Controller(ev) {
-				return
+
+		select {
+		case ev := <-evCh:
+			switch ev := ev.(type) {
+			case *tcell.EventKey:
+				if !g.Controller(ev) {
+					return
+				}
+			default:
+				g.screen.Sync() // Handle terminal resize
 			}
 		default:
-			g.screen.Sync() // Handle terminal resize
+			// Add any non-blocking game logic here
 		}
+
 		if g.state == GAME_OVER {
 			return
 		}
+		switch g.direction {
+		case RIGHT:
+			g.Update(g.snake.x[0]+2, g.snake.y[0])
+		case LEFT:
+			g.Update(g.snake.x[0]-2, g.snake.y[0])
+		case UP:
+			g.Update(g.snake.x[0], g.snake.y[0]-1)
+		case DOWN:
+			g.Update(g.snake.x[0], g.snake.y[0]+1)
+		}
 		g.screen.Sync()
+		time.Sleep(time.Second / 8)
 	}
 }
