@@ -55,13 +55,10 @@ func (g *Game) Controller(ev tcell.Event) bool {
 func (g *Game) Update(x, y int) {
 	g.screen.Clear()
 
-	// Style for the snake
-	style := tcell.StyleDefault.Background(tcell.ColorBlue).Foreground(tcell.ColorWhite)
-	ui.Draw(g.screen, x, y, width, height, style)
-
 	// Style for the food
 	foodStyle := tcell.StyleDefault.Background(tcell.ColorYellow).Foreground(tcell.ColorWhite)
 	if g.food.x == x && g.food.y == y {
+		g.snake.Eat()
 		sw, sh := g.screen.Size()
 		newPositionX := rand.Intn(sw)
 		if newPositionX%2 != 0 {
@@ -70,11 +67,17 @@ func (g *Game) Update(x, y int) {
 		newPositionY := rand.Intn(sh)
 		ui.Draw(g.screen, newPositionX, newPositionY, width, height, foodStyle)
 		g.food.Move(newPositionX, newPositionY)
+
 	} else {
 		ui.Draw(g.screen, g.food.x, g.food.y, width, height, foodStyle)
 	}
-
+	// Style for the snake
 	g.snake.Move(x, y)
+	style := tcell.StyleDefault.Background(tcell.ColorBlue).Foreground(tcell.ColorWhite)
+	for i := 0; i < len(g.snake.x); i++ {
+		ui.Draw(g.screen, g.snake.x[i], g.snake.y[i], width, height, style)
+	}
+
 }
 
 func (g *Game) GameLoop() {
