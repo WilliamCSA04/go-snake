@@ -52,7 +52,23 @@ func (g *Game) Controller(ev tcell.Event) bool {
 	return true
 }
 
+func (g *Game) CanSnakeMove(x, y int) bool {
+	for i := 0; i < len(g.snake.x); i++ {
+		if g.snake.x[i] == x && g.snake.y[i] == y {
+			return true
+		}
+	}
+	sw, sh := g.screen.Size()
+	if x < 0 || x >= sw || y < 0 || y >= sh {
+		return true
+	}
+	return false
+}
+
 func (g *Game) Update(x, y int) {
+	if g.CanSnakeMove(x, y) {
+		return
+	}
 	g.screen.Clear()
 
 	// Style for the food
@@ -81,7 +97,10 @@ func (g *Game) Update(x, y int) {
 }
 
 func (g *Game) GameLoop() {
-	g.Update(g.snake.x[0], g.snake.y[0])
+	style := tcell.StyleDefault.Background(tcell.ColorBlue).Foreground(tcell.ColorWhite)
+	ui.Draw(g.screen, g.snake.x[0], g.snake.y[0], width, height, style)
+	foodStyle := tcell.StyleDefault.Background(tcell.ColorYellow).Foreground(tcell.ColorWhite)
+	ui.Draw(g.screen, g.food.x, g.food.y, width, height, foodStyle)
 
 	for {
 		switch ev := g.screen.PollEvent().(type) {
