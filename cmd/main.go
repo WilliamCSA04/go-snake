@@ -20,6 +20,4 @@ func main() {
 	// Show the square
 	g.GameLoop()
 
-	// Wait for user input before exiting
-
 }

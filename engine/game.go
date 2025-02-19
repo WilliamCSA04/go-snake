@@ -60,12 +60,24 @@ func (g *Game) Controller(ev tcell.Event) bool {
 		case tcell.KeyEscape, tcell.KeyCtrlC:
 			return false
 		case tcell.KeyLeft:
+			if g.direction == RIGHT {
+				return true
+			}
 			g.direction = LEFT
 		case tcell.KeyRight:
+			if g.direction == LEFT {
+				return true
+			}
 			g.direction = RIGHT
 		case tcell.KeyUp:
+			if g.direction == DOWN {
+				return true
+			}
 			g.direction = UP
 		case tcell.KeyDown:
+			if g.direction == UP {
+				return true
+			}
 			g.direction = DOWN
 		}
 	}
@@ -144,10 +156,10 @@ func (g *Game) GameLoop() {
 					return
 				}
 			default:
-				g.screen.Sync() // Handle terminal resize
+				g.screen.Sync()
 			}
 		default:
-			// Add any non-blocking game logic here
+
 		}
 
 		if g.state == GAME_OVER {
