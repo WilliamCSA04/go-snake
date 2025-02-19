@@ -7,10 +7,17 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
+const (
+	START     = iota
+	ON_GOING  = iota
+	GAME_OVER = iota
+)
+
 type Game struct {
 	screen tcell.Screen
 	snake  *Snake
 	food   *Food
+	state  int
 }
 
 var (
@@ -26,6 +33,7 @@ func NewGame() *Game {
 		screen: s,
 		snake:  snake,
 		food:   f,
+		state:  START,
 	}
 }
 
@@ -55,18 +63,20 @@ func (g *Game) Controller(ev tcell.Event) bool {
 func (g *Game) CanSnakeMove(x, y int) bool {
 	for i := 0; i < len(g.snake.x); i++ {
 		if g.snake.x[i] == x && g.snake.y[i] == y {
-			return true
+			g.state = GAME_OVER
+			return false
 		}
 	}
 	sw, sh := g.screen.Size()
 	if x < 0 || x >= sw || y < 0 || y >= sh {
-		return true
+		g.state = GAME_OVER
+		return false
 	}
-	return false
+	return true
 }
 
 func (g *Game) Update(x, y int) {
-	if g.CanSnakeMove(x, y) {
+	if !g.CanSnakeMove(x, y) {
 		return
 	}
 	g.screen.Clear()
@@ -101,7 +111,7 @@ func (g *Game) GameLoop() {
 	ui.Draw(g.screen, g.snake.x[0], g.snake.y[0], width, height, style)
 	foodStyle := tcell.StyleDefault.Background(tcell.ColorYellow).Foreground(tcell.ColorWhite)
 	ui.Draw(g.screen, g.food.x, g.food.y, width, height, foodStyle)
-
+	g.state = ON_GOING
 	for {
 		switch ev := g.screen.PollEvent().(type) {
 		case *tcell.EventKey:
@@ -110,6 +120,9 @@ func (g *Game) GameLoop() {
 			}
 		default:
 			g.screen.Sync() // Handle terminal resize
+		}
+		if g.state == GAME_OVER {
+			return
 		}
 		g.screen.Sync()
 	}
